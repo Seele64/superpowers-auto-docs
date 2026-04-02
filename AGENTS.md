@@ -103,7 +103,33 @@ The skill itself tells you which.
 Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
 
 
+## Agent Documentation Workflow
+
+### Required Docs Structure
+- docs/architecture.md
+
+### Required Behavior
+
+*If docs/architecture.md is missing, DO NOT use skill:maintaining-docs-sync*
+
+1. If docs/architecture.md exists and the task needs project context, read docs directly before any code edits 
+(start with docs/architecture.md than other task-related docs). 
+2. During implementation, if docs and code diverge and docs/architecture.md exists, REQUIRED SKILL: use superpowers:patching-docs-mismatch to patch mismatches (always uses subagent dispatch).
+3. At task completion and docs/architecture.md exists, REQUIRED SKILL: use superpowers:maintaining-docs-sync to verify docs/code alignment. If mismatches found, route to superpowers:patching-docs-mismatch before completing.
+
+### Reading Priority
+1  task-related ./*.md 
+2. docs/architecture.md
+3. task-related docs/*.md
+4. task-related docs/knowledges/*.md
+5. task-related docs/module/*.md
+
 
 ## User Preferences
-Use Traditional Chinese with a concise and direct tone to reply.
+Regardless of the language of user's input, please perform your internal reasoning and tool interactions in English and then translate the final output to Traditional Chinese with a concise and direct tone.
 Prioritize the **question** tool for user interactions.
+
+
+<SUBAGENT-STOP>
+If you were dispatched as a subagent to execute a specific task, ignore this.
+</SUBAGENT-STOP>
