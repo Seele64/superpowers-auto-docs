@@ -1,4 +1,4 @@
-# Architecture
+# Design
 
 ## Repository Purpose
 This repository maintains reusable superpowers skills and top-level agent instructions.

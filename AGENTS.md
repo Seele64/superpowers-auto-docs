@@ -106,23 +106,34 @@ Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
 ## Agent Documentation Workflow
 
 ### Required Docs Structure
-- docs/architecture.md
+- docs/design/architecture.md
+- docs/knowledge/*.md
+- docs/module/*.md
 
 ### Required Behavior
 
-*If docs/architecture.md is missing, DO NOT use skill:maintaining-docs-sync*
+*If docs/design/architecture.md is missing, DO NOT use skill:maintaining-docs-sync*
 
-1. If docs/architecture.md exists and the task needs project context, read docs directly before any code edits 
-(start with docs/architecture.md than other task-related docs). 
-2. During implementation, if docs and code diverge and docs/architecture.md exists, REQUIRED SKILL: use superpowers:patching-docs-mismatch to patch mismatches (always uses subagent dispatch).
-3. At task completion and docs/architecture.md exists, REQUIRED SKILL: use superpowers:maintaining-docs-sync to verify docs/code alignment. If mismatches found, route to superpowers:patching-docs-mismatch before completing.
+1. If docs/design/architecture.md exists and the task needs project context, read docs directly before any code edits 
+(start with docs/design/architecture.md than other task-related docs). 
+2. During implementation, if docs and code diverge and docs/design/architecture.md exists, REQUIRED SKILL: use superpowers:patching-docs-mismatch to patch mismatches (always uses subagent dispatch).
+3. At task completion and docs/design/architecture.md exists, REQUIRED SKILL: use superpowers:maintaining-docs-sync to verify docs/code alignment. If mismatches found, route to superpowers:patching-docs-mismatch before completing.
 
 ### Reading Priority
 1  task-related ./*.md 
-2. docs/architecture.md
+2. docs/design/architecture.md
 3. task-related docs/*.md
-4. task-related docs/knowledges/*.md
+4. task-related docs/knowledge/*.md
 5. task-related docs/module/*.md
+
+### Classification Rules
+1. Every docs/knowledge/*.md file must include source type and confidence for each major claim:
+- source type: official docs, verified web source, or user-provided fact
+- confidence: high/medium/low with a one-line reason
+2. Place content by intent, not convenience:
+- docs/design/architecture.md: system-level design, boundaries, cross-module flows, and decision rationale
+- docs/module/*.md: module-specific implementation details, entry points, contracts, and operational checks
+- docs/knowledge/*.md: reusable knowledge from external references or user-provided facts that can be applied across tasks
 
 
 ## User Preferences

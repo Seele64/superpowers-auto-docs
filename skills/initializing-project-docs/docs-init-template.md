@@ -3,9 +3,9 @@
 Use these section skeletons to create first-version docs directly in the current session.
 
 Canonical path rules (mandatory):
-- Use `docs/knowledges/` (plural) for all knowledge docs.
-- Do not create `docs/knowledge/` (singular).
-- If both folders exist, consolidate content into `docs/knowledges/` and remove singular-path references.
+- Use `docs/knowledge/` for all knowledge docs.
+- Do not create `docs/knowledges/`.
+- If both folders exist, consolidate content into `docs/knowledge/` and remove plural-path references.
 
 Hard requirements for final docs:
 - Fill every section with concrete, evidence-backed content.
@@ -13,9 +13,9 @@ Hard requirements for final docs:
 - Include explicit assumptions where evidence is missing.
 - Add source-file evidence in each doc's "Source Files Used" section.
 - End the initialization run with a completeness report listing generated files, coverage decisions, unknowns, and follow-ups.
-- Validate that final generated file paths use `docs/knowledges/*.md` only.
+- Validate that final generated file paths use `docs/knowledge/*.md` only.
 
-## docs/architecture.md
+## docs/design/architecture.md
 
 ```markdown
 # Architecture
@@ -101,7 +101,7 @@ Hard requirements for final docs:
 - Follow-up recommendations
 ```
 
-## docs/knowledges/<topic>.md
+## docs/knowledge/<topic>.md
 
 ```markdown
 # Knowledge: <Topic>
@@ -119,6 +119,12 @@ Hard requirements for final docs:
 ## 4. Commands/APIs/Procedures
 - ...
 
+## 5. Source Types
+- Official docs / vendor docs
+- Web research / verified public references
+- User-provided facts / project constraints
+- Other evidence captured during initialization
+
 ## 5. Edge Cases and Failure Patterns
 - ...
 
@@ -129,9 +135,9 @@ Hard requirements for final docs:
 ## 7. Related Modules
 - docs/module/<module>.md
 
-## 8. Source Files Used
-- path/to/file
-- path/to/file
+## 8. Source Materials Used
+- path/to/file or URL
+- path/to/file or URL
 
 ## 9. Completeness Notes
 - Scope covered by this knowledge doc

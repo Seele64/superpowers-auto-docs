@@ -1,6 +1,6 @@
 ---
 name: maintaining-docs-sync
-description: Use when task completion nears and docs-code alignment must be verified before marking done, with docs/architecture.md already existing.
+description: Use when task completion nears and docs-code alignment must be verified before marking done, with docs/design/architecture.md already existing.
 ---
 
 # Maintaining Docs Sync
@@ -11,20 +11,20 @@ Before marking task complete, verify docs and code are aligned. This skill check
 ## When to Use
 - Right before marking task complete
 - After implementation with potential behavior, API, or config changes
-- docs/architecture.md already exists
+- docs/design/architecture.md already exists
 - Need to verify alignment before closing task
 - Symptoms: "tests pass, time to check docs", "unsure if docs match new code"
 
 Do not use this skill for first-time docs bootstrap (use superpowers:initializing-project-docs).
 Do not use this skill to patch mismatches (use superpowers:patching-docs-mismatch).
-If docs/architecture.md is missing, stop and ask user to invoke superpowers:initializing-project-docs.
+If docs/design/architecture.md is missing, stop and ask user to invoke superpowers:initializing-project-docs.
 
 ## Decision Flow
 ```dot
 digraph docs_sync_check_flow {
     rankdir=TB;
     start [label="Ready to mark task complete", shape=ellipse];
-    check [label="docs/architecture.md exists?", shape=diamond];
+   check [label="docs/design/architecture.md exists?", shape=diamond];
     missing [label="Route to superpowers:initializing-project-docs", shape=box];
     verify [label="Verify docs match current code", shape=diamond];
     aligned [label="Docs and code aligned", shape=ellipse];
@@ -39,13 +39,13 @@ digraph docs_sync_check_flow {
 ```
 
 ## Required Docs Structure
-- docs/architecture.md
-- docs/knowledges/*.md
+- docs/design/architecture.md
+- docs/knowledge/*.md
 - docs/module/*.md
 
 ## Core Pattern
 1. Before task completion, check impacted docs against changed code and tests.
-2. If docs/architecture.md is missing: stop and route to superpowers:initializing-project-docs.
+2. If docs/design/architecture.md is missing: stop and route to superpowers:initializing-project-docs.
 3. If docs and code align: proceed to mark task complete.
 4. If docs and code mismatch: stop and route to superpowers:patching-docs-mismatch.
    - Do not attempt to patch in this skill.
@@ -57,7 +57,7 @@ digraph docs_sync_check_flow {
 |---|---|---|
 | Docs exist and match code | Proceed with task completion | Safe to close |
 | Docs exist but mismatch | Route to patching-docs-mismatch skill | Mismatch will be fixed by patching skill |
-| docs/architecture.md missing | Route to initializing-project-docs skill | Bootstrap happens first |
+| docs/design/architecture.md missing | Route to initializing-project-docs skill | Bootstrap happens first |
 | Task blocked by init/patch skill | Wait for user/subagent completion | Re-check alignment after |
 
 ## Important: Skill Routing Boundaries
@@ -71,7 +71,7 @@ Alignment check checklist:
 
 ```text
 1) Identify all code/test files changed in this task.
-2) Map each change to impacted docs paths (architecture / knowledges / module).
+2) Map each change to impacted docs paths (design / knowledge / module).
 3) For each impacted docs file:
    a) Read the current docs section.
    b) Read the corresponding changed code.
@@ -80,6 +80,29 @@ Alignment check checklist:
    - Fully aligned: proceed to completion.
    - Mismatched: stop and route to superpowers:patching-docs-mismatch.
 ```
+
+## Example: Checking Alignment After Refactoring
+
+**Scenario:** Refactored auth module — removed callback-based API, added Promise-based API.
+
+**Changed Files:** `src/auth.ts` (lines 50-120), `tests/auth.test.ts`
+
+**Step 1 - Map Changed Code to Docs:**
+- Code: `AuthModule.login(username, password) → Promise<Token>`
+- Impacted Docs: `docs/module/auth.md` (API section), `docs/design/architecture.md` (auth flow)
+
+**Step 2 - Check Alignment:**
+- Read: `docs/module/auth.md` → "AuthModule.login(username, password, callback)"  
+- Read: `src/auth.ts` → `login(username, password): Promise<Token>`
+- Result: ❌ **MISMATCH** — docs describe old callback pattern
+
+**Step 3 - Decision:**
+- Mismatched → Route to `superpowers:patching-docs-mismatch`
+- Do NOT attempt fix in this skill
+- Wait for patching skill to complete
+- Then re-check alignment
+
+**Outcome:** Clear routing prevents mixed concerns; patching skill handles fix with proper evidence trail.
 
 ## Baseline Failures Found In RED
 - Sync (check) and patch were mixed, delaying clear scope.
@@ -109,5 +132,5 @@ Any red flag means stop, identify what's needed (check? patch? init?), and use c
 
 ## Related Skills
 - **Routing: If mismatch found:** Use superpowers:patching-docs-mismatch to fix
-- **Routing: If docs/architecture.md missing:** Use superpowers:initializing-project-docs to bootstrap
+- **Routing: If docs/design/architecture.md missing:** Use superpowers:initializing-project-docs to bootstrap
 - **Checkpoint in completion flow:** This skill gates task completion; it checks and routes rather than modifies
