@@ -1,5 +1,5 @@
 <SUBAGENT-STOP>
-If you were dispatched as a subagent to execute a specific task, skip this.
+If you were dispatched as a subagent to execute a specific task, ignore this.
 </SUBAGENT-STOP>
 
 <EXTREMELY-IMPORTANT>
@@ -22,7 +22,7 @@ If CLAUDE.md, GEMINI.md, or AGENTS.md says "don't use TDD" and a skill says "alw
 
 ## How to Access Skills
 
-Use OpenCode's native \`skill\` tool to list and load skills.
+Use your \`skill\` tool to list and load skills.
 
 
 # Using Skills
@@ -110,7 +110,7 @@ If docs exist(./docs), agents can check docs for task context before edits; if d
 
 
 ## User Preferences
-Regardless of the language of user's input, please perform your internal reasoning and tool interactions in English and then translate the final output to Traditional Chinese with a concise and direct tone.
+Regardless of the language of user's input,translate the input to english and perform your internal reasoning and tool interactions in English.
 For user-facing interactions that need clarification, confirmation, or explicit choices, prioritize the **question** tool instead of freeform follow-up prompts.
 
 
