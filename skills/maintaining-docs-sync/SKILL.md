@@ -40,8 +40,9 @@ digraph docs_sync_check_flow {
 
 ## Required Docs Structure
 - docs/architecture.md
-- docs/knowledges/*.md
-- docs/module/*.md
+- docs/design/*.md
+- docs/modules/*.md
+- docs/knowledge/*.md
 
 ## Core Pattern
 1. Before task completion, check impacted docs against changed code and tests.
@@ -71,7 +72,7 @@ Alignment check checklist:
 
 ```text
 1) Identify all code/test files changed in this task.
-2) Map each change to impacted docs paths (architecture / knowledges / module).
+2) Map each change to impacted docs paths (architecture / design / modules / knowledge).
 3) For each impacted docs file:
    a) Read the current docs section.
    b) Read the corresponding changed code.

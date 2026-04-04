@@ -107,6 +107,9 @@ Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
 
 ### Required Docs Structure
 - docs/architecture.md
+- docs/design/*.md
+- docs/modules/*.md
+- docs/knowledge/*.md
 
 ### Required Behavior
 
@@ -120,9 +123,11 @@ Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
 ### Reading Priority
 1  task-related ./*.md 
 2. docs/architecture.md
-3. task-related docs/*.md
-4. task-related docs/knowledges/*.md
-5. task-related docs/module/*.md
+3. task-related docs/*.md  
+*Never re-read AGENTS.md since you auto-load it*
+4. task-related docs/design/*.md
+5. task-related docs/modules/*.md
+6. task-related docs/knowledge/*.md
 
 
 ## User Preferences

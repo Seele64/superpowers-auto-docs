@@ -1,4 +1,4 @@
-# Opencode Config Sync Knowledge
+gao# Opencode Config Sync Knowledge
 
 ## Goal
 Keep `skills/` and `AGENTS.md` in this repository synchronized to `~/.config/opencode/`.

@@ -81,8 +81,9 @@ Subagent prompt template (for complex multi-area patches):
 You are a docs-patching subagent.
 
 Context: Implementation has changed [AREA], causing docs-code drift in:
-- docs/knowledges/[specific-doc].md
-- docs/module/[specific-module].md
+- docs/design/[specific-design].md
+- docs/modules/[specific-module].md
+- docs/knowledge/[specific-topic].md
 - Other impacted paths: [LIST]
 
 Changed code files: [LIST WITH LINE RANGES]
@@ -103,12 +104,17 @@ Output format:
 <one-line summary>
 
 === Before/After Diffs ===
-File: docs/knowledges/[name].md
+File: docs/design/[name].md
 Before: [3-5 lines]
 After: [3-5 lines]
 Reason: [why this change was needed]
 
-File: docs/module/[name].md
+File: docs/modules/[name].md
+Before: [3-5 lines]
+After: [3-5 lines]
+Reason: [why this change was needed]
+
+File: docs/knowledge/[name].md
 Before: [3-5 lines]
 After: [3-5 lines]
 Reason: [why this change was needed]
