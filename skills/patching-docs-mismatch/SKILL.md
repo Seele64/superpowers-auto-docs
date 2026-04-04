@@ -15,8 +15,8 @@ When code changes create docs-code drift, patch the mismatch precisely and effic
 - **REQUIRED: Always use subagent dispatch** regardless of patch scope
 - Symptoms: "tests pass but docs mention old behavior", "API docs look outdated", "feature change not documented"
 
-Do not use this skill for initialization. Use superpowers:initializing-project-docs for first-time bootstrap.
-Do not use if docs/architecture.md is missing.
+Do not use this skill for initialization tasks.
+Skip this skill if docs/architecture.md is missing.
 Do not use superpowers:maintaining-docs-sync instead; that skill only checks alignment, this skill patches it.
 
 ## Decision Flow
@@ -97,7 +97,8 @@ Requirements:
 3) Every claim requires evidence from changed code files (cite line numbers).
 4) Do not expand scope beyond the listed impacted paths.
 5) Return exact snippet before/after for each change.
-6) Do not edit docs/architecture.md (leave for main session integration).
+6) Write documentation narrative in English; allow non-English text only for quoted source material.
+7) Do not edit docs/architecture.md (leave for main session integration).
 
 Output format:
 === Patch Summary ===
@@ -151,10 +152,10 @@ Any red flag means: Stop. Dispatch subagent immediately. Verify all patches befo
 - Not verifying each subagent patch against actual code line-by-line.
 - Letting multiple subagents edit overlapping doc sections.
 - Skipping final pass that re-reads code and all patched docs together.
-- Using this skill when docs/architecture.md is missing (wrong skill: use superpowers:initializing-project-docs).
+- Using this skill when docs/architecture.md is missing (should be skipped).
 - Sending subagents with vague scope instead of exact code diffs and impacted doc paths.
 
 ## Related Skills
 - **REQUIRED SUB-SKILL:** superpowers:dispatching-parallel-agents (when patching multiple independent areas)
 - **REQUIRED GATE BEFORE THIS:** superpowers:maintaining-docs-sync (to confirm mismatch exists)
-- **ALTERNATIVE FOR BOOTSTRAP:** superpowers:initializing-project-docs (when docs/architecture.md missing)
+- **ALTERNATIVE IF USER EXPLICITLY REQUESTS DOC CREATION:** superpowers:initializing-project-docs

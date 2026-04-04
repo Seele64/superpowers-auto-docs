@@ -103,31 +103,10 @@ The skill itself tells you which.
 Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
 
 
-## Agent Documentation Workflow
+## Documentation 
+If docs exist(./docs), agents can check docs for task context before edits; if docs are missing, skip docs-related skills.
 
-### Required Docs Structure
-- docs/architecture.md
-- docs/design/*.md
-- docs/modules/*.md
-- docs/knowledge/*.md
 
-### Required Behavior
-
-*If docs/architecture.md is missing, DO NOT use skill:maintaining-docs-sync*
-
-1. If docs/architecture.md exists and the task needs project context, read docs directly before any code edits 
-(start with docs/architecture.md than other task-related docs). 
-2. During implementation, if docs and code diverge and docs/architecture.md exists, REQUIRED SKILL: use superpowers:patching-docs-mismatch to patch mismatches (always uses subagent dispatch).
-3. At task completion and docs/architecture.md exists, REQUIRED SKILL: use superpowers:maintaining-docs-sync to verify docs/code alignment. If mismatches found, route to superpowers:patching-docs-mismatch before completing.
-
-### Reading Priority
-1  task-related ./*.md 
-2. docs/architecture.md
-3. task-related docs/*.md  
-*Never re-read AGENTS.md since you auto-load it*
-4. task-related docs/design/*.md
-5. task-related docs/modules/*.md
-6. task-related docs/knowledge/*.md
 
 
 ## User Preferences

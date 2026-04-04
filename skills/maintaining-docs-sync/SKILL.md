@@ -15,9 +15,9 @@ Before marking task complete, verify docs and code are aligned. This skill check
 - Need to verify alignment before closing task
 - Symptoms: "tests pass, time to check docs", "unsure if docs match new code"
 
-Do not use this skill for first-time docs bootstrap (use superpowers:initializing-project-docs).
+Do not use this skill for first-time docs bootstrap unless the user explicitly asks to create docs.
 Do not use this skill to patch mismatches (use superpowers:patching-docs-mismatch).
-If docs/architecture.md is missing, stop and ask user to invoke superpowers:initializing-project-docs.
+If docs/architecture.md is missing, skip this skill.
 
 ## Decision Flow
 ```dot
@@ -25,7 +25,7 @@ digraph docs_sync_check_flow {
     rankdir=TB;
     start [label="Ready to mark task complete", shape=ellipse];
     check [label="docs/architecture.md exists?", shape=diamond];
-    missing [label="Route to superpowers:initializing-project-docs", shape=box];
+   missing [label="Skip this skill", shape=box];
     verify [label="Verify docs match current code", shape=diamond];
     aligned [label="Docs and code aligned", shape=ellipse];
     mismatch [label="Route to superpowers:patching-docs-mismatch", shape=box];
@@ -46,7 +46,7 @@ digraph docs_sync_check_flow {
 
 ## Core Pattern
 1. Before task completion, check impacted docs against changed code and tests.
-2. If docs/architecture.md is missing: stop and route to superpowers:initializing-project-docs.
+2. If docs/architecture.md is missing: skip this skill.
 3. If docs and code align: proceed to mark task complete.
 4. If docs and code mismatch: stop and route to superpowers:patching-docs-mismatch.
    - Do not attempt to patch in this skill.
@@ -58,13 +58,13 @@ digraph docs_sync_check_flow {
 |---|---|---|
 | Docs exist and match code | Proceed with task completion | Safe to close |
 | Docs exist but mismatch | Route to patching-docs-mismatch skill | Mismatch will be fixed by patching skill |
-| docs/architecture.md missing | Route to initializing-project-docs skill | Bootstrap happens first |
+| docs/architecture.md missing | Skip this skill | No docs-sync check is required |
 | Task blocked by init/patch skill | Wait for user/subagent completion | Re-check alignment after |
 
 ## Important: Skill Routing Boundaries
 - **Check only:** This skill determines alignment status.
 - **Patch:** Use superpowers:patching-docs-mismatch to fix mismatches.
-- **Initialize:** Use superpowers:initializing-project-docs for missing docs.
+- **No docs:** Skip this skill.
 - **Do NOT patch from this skill.** Stop and route instead.
 
 ## Implementation
@@ -92,7 +92,7 @@ Alignment check checklist:
 |---|---|
 | "Tests are green, docs can wait" | Green tests do not guarantee user-facing correctness in docs. |
 | "I'll open a docs ticket later" | Delayed docs drift becomes team-wide misinformation. |
-| "I should run init inside this skill" | Keep concerns separated: use initializing-project-docs for bootstrap. |
+| "I should run init inside this skill" | This skill is check-only; if docs are missing, skip it. |
 
 ## Red Flags - Stop And Route Correctly
 - "I'll just quickly fix the docs myself"
@@ -105,10 +105,11 @@ Any red flag means stop, identify what's needed (check? patch? init?), and use c
 - Attempting to edit docs from this skill (wrong skill: use superpowers:patching-docs-mismatch).
 - Assuming alignment without checking all impacted doc paths.
 - Skipping check because "docs look fine" - actually read and compare.
-- Not routing to other skills when missing docs or mismatches found.
+- Trying to route missing-docs cases instead of skipping this skill.
+- Not routing to patching-docs-mismatch when mismatch exists.
 - Completing task without confirming alignment via this skill gate.
 
 ## Related Skills
 - **Routing: If mismatch found:** Use superpowers:patching-docs-mismatch to fix
-- **Routing: If docs/architecture.md missing:** Use superpowers:initializing-project-docs to bootstrap
+- **Routing: If docs/architecture.md missing:** Skip this skill
 - **Checkpoint in completion flow:** This skill gates task completion; it checks and routes rather than modifies
