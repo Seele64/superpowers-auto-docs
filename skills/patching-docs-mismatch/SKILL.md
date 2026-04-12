@@ -1,12 +1,14 @@
 ---
 name: patching-docs-mismatch
-description: Use when docs and code have diverged during implementation and mismatch needs to be patched before task completion, with docs/architecture.md already existing.
+description: Use when docs and code have diverged and patching must include split expansion across module or design docs without losing detail.
 ---
 
 # Patching Docs Mismatch
 
 ## Overview
 When code changes create docs-code drift, patch the mismatch precisely and efficiently using subagents for parallel problem isolation and focused fixes.
+
+Core principle: structural patching means redistribute depth across multiple docs, not reduce depth. Split for scale while preserving and improving detail.
 
 ## When to Use
 - docs/architecture.md exists (prerequisite gate)
@@ -40,13 +42,19 @@ digraph patch_flow {
 
 ## Core Pattern
 1. Identify all independent mismatch areas (docs sections that diverged from changed code).
-2. For each independent area, create a focused subagent task.
+2. Classify mismatch type per area:
+    - behavioral mismatch (docs statement wrong)
+    - structural mismatch (module or design doc became a catch-all and should be split)
+    - preservation mismatch (prior cleanup removed detail instead of relocating it)
+3. For each independent area, create a focused subagent task.
    - Each subagent fixes one isolated mismatch area.
    - Each outputs exact changed doc paths and diff summary.
    - No subagent overlaps on same doc file.
-3. Dispatch all subagents in parallel (use superpowers:dispatching-parallel-agents if 2+).
-4. Collect all patch results and verify each against changed code.
-5. Ensure full alignment before returning control to task completion gate.
+    - For structural mismatches, subagent must split into multiple module and/or design docs as needed.
+    - For preservation mismatches, subagent must restore missing detail and relocate it with explicit links.
+4. Dispatch all subagents in parallel (use superpowers:dispatching-parallel-agents if 2+).
+5. Collect all patch results and verify each against changed code.
+6. Ensure full alignment before returning control to task completion gate.
 
 **No exceptions:** Always dispatch subagent(s). Never patch directly in main session.
 
@@ -55,6 +63,9 @@ digraph patch_flow {
 |---|---|---|---|
 | Single mismatch area | Dispatch one subagent | Current session subagent | Patch returned and verified |
 | Multiple independent mismatches | Dispatch multiple subagents | superpowers:dispatching-parallel-agents | All patches collected and verified |
+| Module doc became monolithic | Dispatch split-focused subagent | Current session subagent or parallel set | Deep details redistributed across multiple module/design docs |
+| Design doc became monolithic | Dispatch split-focused subagent | Current session subagent or parallel set | Deep design subdomains redistributed across multiple design docs |
+| Detail was trimmed during cleanup | Dispatch restoration subagent | Current session subagent | Lost detail restored and linked into split docs |
 | Context constraints | Sequential dispatch + collect | Current session coordination | All mismatches patched, context preserved |
 
 ## Implementation
@@ -67,10 +78,14 @@ For each independent mismatch area:
 - Create subagent prompt specifying exact code changes, impacted docs, and mismatch details.
 - Require subagent to return: patch summary, changed doc paths, before/after snippet.
 - Ensure no two subagents touch the same doc file.
+- If mismatch is structural, require split-expansion map: what remains in parent doc vs what moves to split module/design docs.
+- If mismatch is preservation-related, require restoration map: what detail was missing and where it is restored.
 
 After all subagents return:
 - Collect all patches.
 - Verify each patch against source code once more.
+- Verify split docs preserve or deepen previous detail coverage.
+- Verify parent docs link to all split docs and no orphan sections remain.
 - Ensure docs/architecture.md central theme consistency across all patches.
 - Mark completion only when all patches verified.
 ```
@@ -99,6 +114,8 @@ Requirements:
 5) Return exact snippet before/after for each change.
 6) Write documentation narrative in English; allow non-English text only for quoted source material.
 7) Do not edit docs/architecture.md (leave for main session integration).
+8) If module/design file is overstuffed, split into multiple module/design docs by independent concerns.
+9) Do not trim details to force brevity; preserve and relocate depth with links.
 
 Output format:
 === Patch Summary ===
@@ -123,6 +140,8 @@ Reason: [why this change was needed]
 === Verification ===
 - Changed code reference: [file:lines]
 - Docs now match code: yes/no
+- Detail preserved or expanded: yes/no
+- Split-expansion map complete: yes/no
 - Remaining concerns: [if any]
 ```
 
@@ -138,6 +157,8 @@ Reason: [why this change was needed]
 | "Subagents are overkill for tiny changes" | Subagent ensures evidence grounding and audit trail; always required. |
 | "I'll patch architecture.md too" | Leave architecture to main session; subagents handle leaf docs only. |
 | "tests pass, docs close enough" | Close is drift; patch for precision and user-facing correctness. |
+| "Reviewers want one-file docs, so keep adding to module file" | Use parent-doc navigation plus split docs; do not keep deep multi-concern content in one file. |
+| "To split faster, cut details" | Split patching must preserve or increase detail; cutting detail creates preservation mismatch. |
 
 ## Red Flags - Stop And Re-run
 - "I'll just fix this one line directly"
@@ -154,6 +175,8 @@ Any red flag means: Stop. Dispatch subagent immediately. Verify all patches befo
 - Skipping final pass that re-reads code and all patched docs together.
 - Using this skill when docs/architecture.md is missing (should be skipped).
 - Sending subagents with vague scope instead of exact code diffs and impacted doc paths.
+- Preserving a module/design mega-file by appending more sections instead of split-expansion.
+- Shrinking docs by deleting deep sections without restoration map.
 
 ## Related Skills
 - **REQUIRED SUB-SKILL:** superpowers:dispatching-parallel-agents (when patching multiple independent areas)

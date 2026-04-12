@@ -17,6 +17,11 @@ Hard requirements for final docs:
 - End the initialization run with a completeness report listing generated files, coverage decisions, unknowns, and follow-ups.
 - Validate that final generated file paths use `docs/design/*.md`, `docs/modules/*.md`, and `docs/knowledge/*.md`.
 
+Mode rules (mandatory):
+- Bootstrap mode (docs missing): create baseline docs set.
+- Refresh mode (docs already exist): re-check codebase evidence first, then update stale sections in place.
+- In refresh mode, do not rewrite stable docs from scratch unless user explicitly requested full rewrite.
+
 Coverage balance gates (hard requirements):
 - Must generate at least 1 file in `docs/design/*.md`.
 - Must generate at least 1 file in `docs/modules/*.md`.
@@ -26,6 +31,26 @@ Coverage balance gates (hard requirements):
   - at least one related design doc link
   - at least one related module doc link
 - Do not produce a knowledge-heavy baseline with zero design docs.
+
+Module granularity rules (hard requirements):
+- Keep each `docs/modules/*.md` file contract-focused and scannable.
+- Put volatile, feature-by-feature walkthroughs in `docs/design/*.md` and link from module docs.
+- Move long test matrices and operational checklists out of module docs unless explicitly required by user.
+- If one module doc starts covering multiple independent features in detail, split into linked topic docs.
+
+Refresh-mode checks (hard requirements):
+- Map changed code areas to existing docs sections before editing.
+- Mark each affected section as up-to-date, stale, missing, or structurally outdated.
+- Patch stale/structurally outdated sections first; create new docs only when coverage is missing.
+- Produce a component boundary map before refresh edits.
+- If a module doc contains deep detail for multiple independent components, split those details into separate linked docs.
+
+Component split output (mandatory):
+- Include a table in your completion report:
+  - Component
+  - Owning code paths
+  - Target detail doc
+  - Status (updated/new/unchanged)
 
 ## docs/architecture.md
 
@@ -181,43 +206,33 @@ Coverage balance gates (hard requirements):
 |---|---|---|---|
 | ... | ... | ... | ... |
 
-## 5. Control Flow
-### Main flow
-1. ...
-2. ...
-
-### Error flow
-1. ...
-2. ...
-
-## 6. Data Contracts
+## 5. Data Contracts
 - Inputs/outputs/state assumptions
 
-## 7. Configuration Touchpoints
+## 6. Configuration Touchpoints
 - Env vars/config keys/defaults
 
-## 8. Failure Modes and Safeguards
+## 7. Failure Modes and Safeguards
 - ...
 
-## 9. Testing and Verification
-- Existing tests
-- Missing tests
-- Quick verification commands
+## 8. Related Design Docs
+- docs/design/<topic>.md (feature workflows, tradeoffs, detailed validation)
+- docs/design/<topic>.md
 
-## 10. Change Checklist
-- [ ] API contract checked
-- [ ] Backward compatibility checked
-- [ ] Docs consistency checked
-- [ ] Tests updated or justified
-
-## 11. Source Files Used
+## 9. Source Files Used
 - path/to/file
 - path/to/file
 
-## 12. Completeness Notes
+## 10. Completeness Notes
 - Scope covered by this module doc
 - Known limitations or unknowns
 ```
+
+Notes:
+- Keep module docs concise enough for one-pass scanning.
+- Do not duplicate detailed control-flow walkthroughs already documented in design docs.
+- If reviewers ask for one-file readability, keep this file as an index and improve navigation links instead of inlining all details.
+- If one module covers multiple independent components, keep the module summary unified but split deep component behavior into separate linked detail docs.
 
 ## docs/knowledge/<topic>.md
 

@@ -104,7 +104,7 @@ Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
 
 
 ## Documentation 
-If docs exist(./docs), agents can check docs for task context before edits; if docs are missing, skip docs-related skills.
+If docs exist(./docs), agents can check docs for task context before edits; if docs/architecture.md is missing, skip docs-related skills.
 
 
 
@@ -117,3 +117,10 @@ For user-facing interactions that need clarification, confirmation, or explicit 
 <SUBAGENT-STOP>
 If you were dispatched as a subagent to execute a specific task, ignore this.
 </SUBAGENT-STOP>
+
+
+## project info
+docs related skills:
+- skills/initializing-project-docs
+- skills/maintaining-docs-sync
+- skills/patching-docs-mismatchskills/patching-docs-mismatch
