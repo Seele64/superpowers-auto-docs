@@ -9,6 +9,7 @@ description: Use when docs are missing or existing docs have grown dense with mi
 Initialize or refresh a complete docs baseline from code evidence.
 
 Core principle: when docs grow, split by independent component or subdomain and preserve detail by redistributing it across multiple docs. Do not "clean up" by deleting depth.
+If `docs/superpowers/plans` or `docs/superpowers/specs` exists, review them as required context before drafting or refreshing docs.
 
 For medium-to-large repositories, split independent docs work across multiple subagents to speed up delivery and keep the main session context clean.
 
@@ -22,6 +23,7 @@ For medium-to-large repositories, split independent docs work across multiple su
 - User asked to "re-initialize" docs even though docs already exist
 - Project context is needed before safe implementation
 - The task spans multiple modules/topics and docs work can be partitioned independently
+- Historical plan/spec context exists under `docs/superpowers/plans` or `docs/superpowers/specs`
 
 Do not use this skill for small end-of-task sync checks. Use superpowers:maintaining-docs-sync for completion-gate verification.
 
@@ -35,6 +37,7 @@ Do not use this skill for small end-of-task sync checks. Use superpowers:maintai
    - high-impact modules
    - external knowledge/reference topics
    - required contracts and runtime flows
+   - `docs/superpowers/plans/*.md` and `docs/superpowers/specs/*.md` context when present
 4. Run split-expansion audit before writing or refreshing docs:
    - Enumerate independent components in each module domain.
    - Enumerate independent subdomains in each design domain.
@@ -46,6 +49,7 @@ Do not use this skill for small end-of-task sync checks. Use superpowers:maintai
    - If one file still owns deep details for 2+ independent concerns, split before drafting.
 6. Run architecture reconnaissance before any subagent dispatch:
    - Read code/tests/config/scripts to identify real module boundaries.
+   - Read `docs/superpowers/plans/*.md` and `docs/superpowers/specs/*.md` when present.
    - Build a partition map: each partition has source files, target docs paths, and owner.
    - If boundaries are unclear or overlapping, do not dispatch subagents.
 7. Lock minimum output quotas before drafting:
@@ -77,12 +81,19 @@ Do not use this skill for small end-of-task sync checks. Use superpowers:maintai
 | Scope confirm | Lock what to document first | Clear module/topic scope |
 | Coverage plan | Define module/topic partitions | Explicit docs coverage map |
 | Evidence gather | Read code/tests/config/scripts | Source-file-backed facts |
+| Plan/spec gather | Read `docs/superpowers/plans/*.md` and `docs/superpowers/specs/*.md` when present | Prior intent and implementation context captured |
 | Split audit | Map each component/subdomain to code ownership and doc target | Split-ready expansion plan |
 | Mode select | Bootstrap when docs missing; refresh when docs already exist | Correct workflow branch |
 | Structure create | Add required docs files | Baseline docs tree exists |
 | Detail guard | Split dense docs into multiple module/design docs while preserving depth | No detail loss |
 | Parallel drafting | Mandatory for medium-to-large scope with clear partitions; skip when boundaries are unclear | Faster drafts with cleaner main context and controlled risk |
 | Integration and QA | Merge + verify links/terminology/contracts | Complete and internally coherent docs |
+
+## Plan/Spec Relevance Rule
+When `docs/superpowers/plans/` or `docs/superpowers/specs/` exists, "relevant" files mean:
+1. Files whose filename or headings match the current module/topic keywords.
+2. Files explicitly linked from related architecture/design/module docs.
+3. If no direct match is found, read at least the most recently updated file in each existing directory as minimum context.
 
 ## Split-Expansion Rules
 Use this to scale detail by splitting, not trimming:
@@ -130,6 +141,8 @@ Use this checklist to generate full docs (no placeholders):
    - docs/knowledge/<topic>.md (singular directory only)
    - forbid all non-canonical legacy path variants
 8) Gather evidence from code/tests/config/scripts.
+   - If `docs/superpowers/plans/` exists, read relevant plan docs.
+   - If `docs/superpowers/specs/` exists, read relevant spec docs.
 9) For refresh mode, perform mismatch scan before writing:
    - map current code paths to existing docs sections
    - mark stale, missing, and structurally outdated areas
@@ -161,6 +174,8 @@ Use this checklist to generate full docs (no placeholders):
    - fail if medium-to-large scope skips subagent draft phase despite clear partitions
    - fail if architecture synthesis happens before design/modules evidence exists
    - fail if growth pressure is handled by summary-only compression instead of split expansion
+   - fail if `docs/superpowers/plans/` exists and relevant plan docs were not reviewed
+   - fail if `docs/superpowers/specs/` exists and relevant spec docs were not reviewed
    - fail if generated docs contain non-English narrative text (except quoted source material)
    - fail if knowledge docs are generated without external sources
    - fail if any knowledge doc lacks related design/modules links
@@ -211,6 +226,7 @@ Hard constraints:
 8) Keep module docs contract-focused; place long feature walkthroughs and validation matrices in design docs and link them.
 9) In refresh mode, do not recreate stable docs from scratch; patch stale sections first.
 10) If scope includes multiple independent concerns, return a split map and expand into separate module/design docs without detail loss.
+11) If `docs/superpowers/plans/` or `docs/superpowers/specs/` exists for this partition, read and cite relevant files as context evidence.
 
 Output format:
 === Patch Summary ===
@@ -289,6 +305,7 @@ Any red flag means complete first-version docs before proceeding.
 - Treating module docs as catch-all dumps for volatile feature details.
 - Treating docs-exist cases as check-only operations instead of rechecking codebase evidence and updating docs.
 - Refreshing content without producing component boundary map and component split outputs.
+- Skipping `docs/superpowers/plans/*.md` or `docs/superpowers/specs/*.md` context when those paths exist.
 - Splitting by deleting details instead of relocating details with links.
 - Splitting module docs while leaving design docs monolithic under the same growth pressure.
 - Writing generic docs without concrete source-file evidence.

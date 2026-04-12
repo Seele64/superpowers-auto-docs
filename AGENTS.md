@@ -104,13 +104,17 @@ Instructions say WHAT, not HOW. "Add X" or "Fix Y" doesn't mean skip workflows.
 
 
 ## Documentation 
-If docs exist(./docs), agents can check docs for task context before edits; if docs/architecture.md is missing, skip docs-related skills.
-
+If docs exist(./docs), check docs for task context.
+epecially:
+docs/architechure.md
+related docs/design/*.md
+related docs/modules/*.md
+related docs/superpowers/specs/*.md
 
 
 
 ## User Preferences
-Regardless of the language of user's input,translate the input to english and perform your internal reasoning and tool interactions in English.
+Always respond in English.
 For user-facing interactions that need clarification, confirmation, or explicit choices, prioritize the **question** tool instead of freeform follow-up prompts.
 
 

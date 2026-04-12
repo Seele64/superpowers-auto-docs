@@ -16,6 +16,7 @@ Hard requirements for final docs:
 - Add source-file evidence in each doc's "Source Files Used" section.
 - End the initialization run with a completeness report listing generated files, coverage decisions, unknowns, and follow-ups.
 - Validate that final generated file paths use `docs/design/*.md`, `docs/modules/*.md`, and `docs/knowledge/*.md`.
+- If `docs/superpowers/plans/` or `docs/superpowers/specs/` exists, review and cite relevant files.
 
 Mode rules (mandatory):
 - Bootstrap mode (docs missing): create baseline docs set.
@@ -31,6 +32,15 @@ Coverage balance gates (hard requirements):
   - at least one related design doc link
   - at least one related module doc link
 - Do not produce a knowledge-heavy baseline with zero design docs.
+
+Optional superpowers context (if present):
+- `docs/superpowers/plans/*.md`
+- `docs/superpowers/specs/*.md`
+- Treat these as supporting evidence for initialization and refresh decisions; do not ignore them when they exist.
+- Relevance selection:
+  - include files whose filename/headings match current module/topic keywords
+  - include files linked by related architecture/design/module docs
+  - if no direct match, include at least the most recently updated file from each existing directory
 
 Module granularity rules (hard requirements):
 - Keep each `docs/modules/*.md` file contract-focused and scannable.
